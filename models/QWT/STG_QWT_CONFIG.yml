@@ -9,3 +9,7 @@ sources:
         - name: PRODUCTS
         - name: ORDERS
         - name: STG_ORDERDETAILS
+        - name: SHIPMENTS
+        - name: Employee
+        - name: OFFICE
+        - name: suppliers
