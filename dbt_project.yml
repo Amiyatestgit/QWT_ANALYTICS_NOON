@@ -35,11 +35,14 @@ clean-targets:         # directories to be removed by `dbt clean`
 # continue to be built as views. These settings can be overridden in the individual model files
 # using the `{{ config(...) }}` macro.
 
+on-run-start: "alter session set timezone = 'Asia/Kolkata';"
+on-run-end: "grant select on table qwt_analytics_dev.auditing_dev.auditing_qwt_model to role sysadmin;"
+
 models:
-  my_new_project:
-    # Applies to all files under models/example/
-    example:
-      
+  pre-hook:
+    - "insert into auditing_dev.auditing_qwt_model(modelname, starttime, endtime, duration) values ('{{this}}', current_timestamp, null, null)"
+  post-hook:
+    - " update auditing_dev.auditing_qwt_model set endtime = current_timestamp, duration = datediff('second', starttime, current_timestamp) where modelname = '{{this}}'"      
 seeds:
   schema: lookup_dev
 vars:
