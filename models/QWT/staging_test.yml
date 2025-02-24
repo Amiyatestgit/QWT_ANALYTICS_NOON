@@ -2,8 +2,10 @@ version: 2
 
 models:
   - name: stg_customers
+    description: "{{doc('customers_desc')}}"
     columns:
       - name: CUSTOMERID
+        description: "{{doc('products_desc')}}"
         tests:
           - unique
           - not_null

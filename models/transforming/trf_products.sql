@@ -1,4 +1,4 @@
-{{config(materialized = 'table',transient = false, schema='transforming_dev')}}
+{{config(materialized = 'table',transient = false, schema=env_var('DBT_TRANSFORMSCHEMA', 'transforming_dev'))}}
  
 select
 p.productid,

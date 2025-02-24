@@ -1,4 +1,3 @@
-
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
@@ -36,15 +35,19 @@ clean-targets:         # directories to be removed by `dbt clean`
 # using the `{{ config(...) }}` macro.
 
 on-run-start: "alter session set timezone = 'Asia/Kolkata';"
-on-run-end: "grant select on table qwt_analytics_dev.auditing_dev.auditing_qwt_model to role sysadmin;"
+on-run-end: "{{ dq_tools.store_test_results(results) }}"
 
 models:
   pre-hook:
-    - "insert into auditing_dev.auditing_qwt_model(modelname, starttime, endtime, duration) values ('{{this}}', current_timestamp, null, null)"
+    - "insert into {{env_var('DBT_QWTDB', 'QWT_ANALYTICS_DEV')}}.{{env_var('DBT_AUDITSCHEMA', 'AUDITING_DEV')}}.auditing_qwt_model(modelname, starttime, endtime, duration) values ('{{this}}', current_timestamp, null, null)"
   post-hook:
-    - " update auditing_dev.auditing_qwt_model set endtime = current_timestamp, duration = datediff('second', starttime, current_timestamp) where modelname = '{{this}}'"      
+    - " update {{env_var('DBT_QWTDB', 'QWT_ANALYTICS_DEV')}}.{{env_var('DBT_AUDITSCHEMA', 'AUDITING_DEV')}}.auditing_qwt_model set endtime = current_timestamp, duration = datediff('second', starttime, current_timestamp) where modelname = '{{this}}'" 
+
+  dq_tools:
+    +schema: "{{env_var('DBT_AUDITSCHEMA','AUDITING_DEV')}}"    
 seeds:
-  schema: lookup_dev
+  schema: "{{env_var('DBT_LOOKUPSCHEMA','LOOKUP_DEV')}}"
 vars:
   v_country: 'USA'
   "dbt_date:time_zone": "Asia/Kolkata"
+  dbt_dq_tool_schema: "{{env_var('DBT_AUDITSCHEMA','AUDITING_DEV')}}"
