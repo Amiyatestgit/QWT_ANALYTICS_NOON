@@ -1,0 +1,11 @@
+version: 2
+seeds:
+  - name: divisions
+    config:
+      schema: "{{env_var('DBT_LOOKUPSCHEMA','lookup_dev')}}"
+  - name: categories
+    config:
+      schema: "{{env_var('DBT_LOOKUPSCHEMA','lookup_dev')}}"
+  - name: shipers
+    config:
+      schema: "{{env_var('DBT_LOOKUPSCHEMA','lookup_dev')}}"
